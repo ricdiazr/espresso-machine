@@ -13,5 +13,7 @@ I finally will publish my work, I defenitely not a programming genius but maybe 
 I am not any good at documenting,I just trying to explain the intention of the whole module; well in short,
 a lazy SCXML implementation; Key features:
 
-	0- Laziness: I just want it to work with the less effort possible.
-	1- Embedable: In order to proper "embed" the software I tried not to implement concrete bootstrap and enviromental specific classes. In most of the times it requires to go deep into the implementation and "somehow" override specific part of it; the "somehow" becomes really tricky when there are no documentation and the software was not meant for extentions; so I have decided not provide specific concrete implementations on this module as a way to keep it open enough for integration.
+	- Laziness: I just want it to work with the less effort possible.
+	- Embedable: Basically ... it is not completed, it is a bunch of classes that are useless, unless there are some other code making them work, I tried not to implement concrete
+		bootstrap and enviromental specific classes, Yes! it is packaged as OSGi bundle  [just because I want this stuff running in an OSGi container],
+		in theory that shouldn't affect any other target ecosystem.
