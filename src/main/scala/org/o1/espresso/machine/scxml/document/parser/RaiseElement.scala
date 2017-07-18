@@ -8,8 +8,8 @@ import scala.xml.Node
 /**
   * Created by ricardo on 11/10/16.
   */
-trait RaiseElement extends ExecutableElement with Raise with SendElement{
-  override def event = executableNode \@ "event"
+trait RaiseElement extends ExecutableElement with Raise {
+  override def event = DataValueExpression(executableNode, "event")
 }
 
 object RaiseElement {

@@ -10,6 +10,7 @@ import scala.xml.{Node, NodeSeq}
   */
 trait InvokeElement extends ExecutableElement with Invoke {
   override def src: DataValueExpression =  DataValueExpression(executableNode, "src")
+  override def invokingType: DataValueExpression =  DataValueExpression(executableNode, "type")
   override def content:Option[Content] = {
     if ((executableNode \ "content").nonEmpty)
       Some(new Content {
@@ -31,8 +32,8 @@ object InvokeElement {
   }
 
   def apply(nodeSeq:NodeSeq): Seq[InvokeElement] = {
-    val result = new ArrayBuffer[InvokeElement]
-    nodeSeq foreach ((node:Node) => result += InvokeElement(node).asInstanceOf)
+    var result = new ArrayBuffer[InvokeElement]
+    nodeSeq foreach ((node:Node) => result += InvokeElement(node).asInstanceOf[InvokeElement])
     result
   }
 }

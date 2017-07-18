@@ -18,7 +18,10 @@ trait SCXMLElementProcessor
   def process(scxml: SCXML, id: Option[String] = None): SCXMLInstance = {
     debug(s"process ${scxml.name} - ${id}")
     val scxmlInstance:SCXMLInstance = registry.register(
-      SCXMLInstance(scxml, eventQueue(false), eventQueue(true), registry.last.descriptor.processId+1)).last
+      SCXMLInstance(scxml,
+        eventQueue(false),
+        eventQueue(true),
+        registry.last.descriptor.processId+1)).last
     execute(scxmlInstance).onComplete {
       case Success(ps) => println("done")
       case Failure(ex) => println("oops something went wrong")

@@ -5,7 +5,7 @@ package org.o1.espresso.machine.scxml.document
   */
 trait Invoke extends Executable {
   def localName = "invoke"
-  val invokingType:DataValueExpression = DataValueExpression(value = Some("http://www.w3.org/TR/scxml"))
+  def invokingType:DataValueExpression
   def id:DataValueExpression
   def src:DataValueExpression
   def finalise:Seq[Executable] = Nil

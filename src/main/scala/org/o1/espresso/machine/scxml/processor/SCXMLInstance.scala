@@ -9,6 +9,9 @@ import scala.collection.mutable
 
 trait SCXMLInstance extends StateMachineProcess {
   this: SCXML =>
+ object Error extends Enumeration {
+   val execution, communication = Value
+ }
   val configuration = new mutable.MutableList[SCXMLState]
   val intQueue:EventQueue
   val extQueue:EventQueue

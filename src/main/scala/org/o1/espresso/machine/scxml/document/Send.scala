@@ -6,7 +6,6 @@ package org.o1.espresso.machine.scxml.document
 trait Send extends Raise with Executable {
   override def localName = "send"
   def transportType: DataValueExpression
-  def event:DataValueExpression
   def target:DataValueExpression
   def id:DataValueExpression
   def delay:DataValueExpression

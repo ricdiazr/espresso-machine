@@ -5,5 +5,5 @@ package org.o1.espresso.machine.scxml.document
   */
 trait Raise extends Executable {
   def localName = "raise"
-  def event: String
+  def event: DataValueExpression
 }
