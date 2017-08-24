@@ -2,8 +2,7 @@ package org.o1.espresso.machine.scxml.document.parser
 
 import java.net.URI
 
-import org.o1.espresso.machine.scxml.document.{DataExpression, DataSrc, Datamodel, DatamodelData}
-import org.o1.espresso.machine.scxml.document.DatamodelData
+import org.o1.espresso.machine.scxml.document._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.xml.{Elem, NodeSeq}
@@ -13,7 +12,7 @@ import scala.xml.{Elem, NodeSeq}
   */
 trait DatamodelElement extends Datamodel {
   val dataNodes: NodeSeq
-
+  val modelType:String
   override def datas(ids: String*): Seq[DatamodelData] = {
     val darray = if (ids.length > 1 || ids.contains("*"))
       new ArrayBuffer[DatamodelData](ids.length) else new ArrayBuffer[DatamodelData](dataNodes.length)
@@ -24,12 +23,15 @@ trait DatamodelElement extends Datamodel {
 
   def dataModelData(data:NodeSeq): DatamodelData = {
     data \@"_" match {
-      case "src" => DataSrc(id= Some((data \@"id")), URI.create((data \@"src")))
-      case "expr" => DataExpression(id= Some((data \@"id")), expr = (data \@"expr"))
+      case "src" => Src(id= (data \@"id"), URI.create((data \@"src")), model=modelType)
+      case "expr" => Expr(id= (data \@"id"), expr = ExpressionValue(data \@"expr"), model=modelType)
     }
   }
 }
 object DatamodelElement {
-  def apply(scxml:Elem):DatamodelElement = apply(scxml \ "datamodel")
-  def apply(datamodel:NodeSeq) = new DatamodelElement{val dataNodes:NodeSeq = datamodel \ "data"}
+  def apply(scxml:Elem):DatamodelElement = apply(scxml \ "datamodel",scxml \@"datamodel")
+  def apply(datamodel:NodeSeq, model:String = "ecmascript") = new DatamodelElement {
+    val dataNodes:NodeSeq = datamodel \ "data"
+    val modelType = model
+  }
 }

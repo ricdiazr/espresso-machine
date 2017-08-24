@@ -2,20 +2,20 @@ package org.o1.espresso.machine.scxml.processor
 
 import org.o1.espresso.machine.{ProcessDescriptor, ProcessStatus, StateMachineProcess}
 import org.o1.espresso.machine.scxml._
-import org.o1.espresso.machine.scxml.document.SCXML
+import org.o1.espresso.machine.scxml.document.{Datamodel, SCXML}
 
 import scala.collection.mutable
 
 
 trait SCXMLInstance extends StateMachineProcess {
   this: SCXML =>
- object Error extends Enumeration {
-   val execution, communication = Value
- }
+  
   val configuration = new mutable.MutableList[SCXMLState]
   val intQueue:EventQueue
   val extQueue:EventQueue
   val instanceId:String = name + "." + descriptor.processId
+  val listeners = new mutable.MutableList[SCXMLEventListener]
+
   def activeState:Option[SCXMLState] = {
     if(descriptor.status == ProcessStatus.Active)
       Some(configuration.last)
