@@ -9,12 +9,13 @@ import scala.xml.Node
   */
 trait SendElement extends ExecutableElement with Send {
 
-  override def event = DataValueExpression(executableNode,"event")
-  override def transportType = DataValueExpression(executableNode, "type")
-  override def target = DataValueExpression(executableNode,"target")
-  override def id = DataValueExpression(executableNode,"id","location")
-  override def delay = DataValueExpression(executableNode, "delay")
+  override def event = DataValueExpressionAttribute(executableNode,"event")
+  override def transportType = DataValueExpressionAttribute(executableNode, "type")
+  override def target = DataValueExpressionAttribute(executableNode,"target")
+  override def id = DataValueExpressionAttribute(executableNode,"id","location")
+  override def delay = DataValueExpressionAttribute(executableNode, "delay")
   override def content = new Content{override def toString=executableNode.text}
+
   override def params = ParamElement(executableNode \ "param")
 }
 object SendElement {

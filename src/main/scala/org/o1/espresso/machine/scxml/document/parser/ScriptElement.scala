@@ -22,7 +22,7 @@ trait ScriptElement extends ExecutableElement with Script {
   }
 }
 object ScriptElement {
-  def apply(node:Node, bind:ExecutableOn.Value = ExecutableOn.Ordered): ExecutableElement = new ScriptElement {
+  def apply(node:Node, bind:ExecutableOn.Value = ExecutableOn.Ordered)= new ScriptElement with ExecutableElement {
     override val executableNode: Node = node
     override val bound = bind
   }

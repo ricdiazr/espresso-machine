@@ -12,7 +12,7 @@ trait SCXML extends DocumentElement {
   def binding:String = "early"
   def initial:Option[String] = None
   def datamodel: Datamodel
-  def script: Script
+  def script: Option[Script]
   def states: Seq[State]
   def finals: Seq[Final]
 }

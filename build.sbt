@@ -34,11 +34,12 @@ javacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scala-lang" % "scala-xml" % "2.11.+",
-  "joda-time" % "joda-time" % "2.9.+",
-  "org.o1" %%  "espresso-cup" % "0.0.1",
-  "org.scalatest"     %% "scalatest"   % "3.0.0" % "test"
+  "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+  "joda-time" % "joda-time" % "2.9.9",
+  "org.o1" %%  "espresso-cup" % "0.0.1"
 )
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 osgiSettings
 OsgiKeys.bundleSymbolicName := "org.o1.espresso-machine"
@@ -52,7 +53,8 @@ logLevel := Level.Warn
 logLevel in compile := Level.Info
 
 // Level.INFO is needed to see detailed output when running tests
-logLevel in test := Level.Info
+logLevel in test := Level.Debug
+logBuffered in test := false
 
 // define the statements initially evaluated when entering 'console', 'console-quick', but not 'console-project'
 initialCommands in console := """|""".stripMargin

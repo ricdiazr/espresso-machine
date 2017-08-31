@@ -2,15 +2,15 @@ package org.o1.espresso.machine.scxml.document.parser
 
 import org.o1.espresso.machine.scxml.document._
 
-import scala.collection.mutable.ArrayBuffer
-import scala.xml.{Node, NodeSeq}
+import scala.xml.{Node}
 
 /**
   * Created by ricardo on 11/8/16.
   */
 trait StateElement extends State {
   val state:Node
-  val stateType = state.label match {
+
+  lazy val stateType = state.label match {
     case "initial" => StateType.Initial
     case "parallel" => StateType.Parallel
     case _ => if (state.count((n: Node) => (n.label == "state" || n.label == "initial" || n.label == "parallel")) > 0)
@@ -19,13 +19,9 @@ trait StateElement extends State {
       StateType.Atomic
   }
   override lazy val id = if ( (state \ "@id").nonEmpty ) Some(state \@ "id") else None
-  override def states: Seq[State] = {
-    val statesArray = new ArrayBuffer[State]
-    state.foreach( (node:Node) =>
-      if ( node.label == "initial" || node.label == "state" || node.label == "parallel" ) statesArray+=StateElement(node))
+  override def states: Seq[State] = state.child.filter(
+    (n:Node) => n.label == "initial" || n.label == "state" || n.label == "parallel").map(StateElement.apply)
 
-    statesArray
-  }
   override def executables(on: Option[ExecutableOn.Value]): Option[Seq[ExecutableElement]] = {
     on match {
       case ExecutableOn.Entry => Some(ExecutableElement(state \ "onentry",ExecutableOn.Entry))
@@ -34,6 +30,7 @@ trait StateElement extends State {
       case _ => Some(ExecutableElement(state))
     }
   }
+  override def initial: Seq[String] = if ( (state \ "@initial").nonEmpty ) (state \@"initial").split(' ') else super.initial
   override def  invokes: Seq[Invoke] = InvokeElement(state \ "invoke")
   override def transitions = TransitionElement(state \ "transition")
   override def history: Option[History] = if ( (state \ "history").nonEmpty ) Some(HistoryElement((state \ "history").head)) else None

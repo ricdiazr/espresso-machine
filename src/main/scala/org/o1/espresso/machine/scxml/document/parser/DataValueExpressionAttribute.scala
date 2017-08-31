@@ -9,7 +9,7 @@ import scala.xml.Node
   */
 trait DataValueExpressionAttribute extends DataValueExpression {
 }
-object DataValueExpression {
+object DataValueExpressionAttribute {
 
     def apply(node: Node,valueAttr:String, exprSuffix:String =  "expr") = new DataValueExpression {
       override val value = if( !(node \@ valueAttr).isEmpty ) Some(new StringValue(node \@ valueAttr)) else {

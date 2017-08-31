@@ -9,7 +9,7 @@ import scala.xml.Node
   * Created by ricardo on 11/10/16.
   */
 trait RaiseElement extends ExecutableElement with Raise {
-  override def event = DataValueExpression(executableNode, "event")
+  override def event = DataValueExpressionAttribute(executableNode, "event")
 }
 
 object RaiseElement {
