@@ -10,48 +10,57 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 trait SCXMLElementProcessor
-  extends DocumentElementProcessor[SCXML,SCXMLInstance] with Logging {
+  extends DocumentElementProcessor[SCXML,SCXMLSession] with Logging {
 
   val thisProcessor = this
   val registry:SCXMLInstanceRegistry
-  val binder:DataBinding
+  val interpreter:SCXMLElementInterpreter
 
-  def process(scxml: SCXML, id: Option[String] = None): SCXMLInstance = {
-    debug(s"process ${scxml.name} - ${id}")
-    val scxmlInstance:SCXMLInstance = registry.register(
-      SCXMLInstance(scxml,
-        eventQueue(false),
-        eventQueue(true),
-        registry.last.descriptor.processId+1)).last
-    execute(scxmlInstance).onComplete {
-      case Success(ps) => println("done")
-      case Failure(ex) => println("oops something went wrong")
-    }
-    scxmlInstance
+  override def process(scxml: SCXML): SCXMLSession = {
+    debug(s"process ${scxml.name}")
+    interpret(scxml, registry.last match {
+      case Some(p) =>p.descriptor.processId +1
+      case _=> 1
+    })
   }
 
-  def eventQueue(isExternal:Boolean):EventQueue
-
-  def execute(scxml:SCXMLInstance):Future[SCXMLProcessingStep] = Future {
-    new SCXMLProcessingStep {
-      val (parent,children) = interpret(scxml.asInstanceOf[SCXML])
-      override def isDone = scxml.descriptor.status == ProcessStatus.Halt
+  def interpret(scxml: SCXML, id:Long): SCXMLSession = {
+    val session:SCXMLSession = registry.register(SCXMLInstance(scxml, id)).last match {
+      case Some(s) => s.asInstanceOf[SCXMLSession]
     }
+    startup(session)
+    session
   }
 
-  def interpret[E <: DocumentElement](e:E) = {
-    e match {
-      case e: SCXML => if (isDocumentValid(e)) (e, e.datamodel)
-      else throw NonConformantSCXMLException(e.localName, "does not define a least one valid state")
-    }
+  protected[processor] def eventQueue(isExternal:Boolean = false):EventQueue
+
+
+  /**
+    * At startup, the SCXML Processor MUST place the state machine in the configuration specified
+    * by the 'initial' attribute of the <scxml> element.
+    * @param scxml Session registered at this processor's registry
+    * @return
+    */
+  def startup(scxml:SCXMLSession):SCXMLProcessingStep = scxml.activate(SCXMLMacroStep(_,thisProcessor))
+
+  protected[processor] def signal(target:SCXMLSession,status:ProcessStatus.Value,q:EventQueue):Unit = {
+    q.enqueue(SignalEvent(target,status))
   }
 
-  def isDocumentValid(scxml:SCXML):Boolean = {
-    if (scxml.states.size >= 1) true
-    else if (scxml.finals.size >= 1 ) true
-    else scxml.initial match {
-      case Some(i) => scxml.states.count((s:State)=> s.id == i) == 1
-      case _ => false
+}
+protected object SCXMLMacroStep {
+
+  def apply(scxml:SCXMLSession, processor:SCXMLElementProcessor): SCXMLProcessingStep
+  = new SCXMLProcessingStep {
+    val internalQueue: EventQueue = processor.eventQueue()
+    val externalQueue: EventQueue = processor.eventQueue(true)
+    val datamodel:SCXMLDatamodel[AnyRef] = processor.interpreter.datamodel(scxml.binding,scxml.datamodel)
+    override def isRunning = {
+      processor.debug(s"is ${scxml.instanceId} active?")
+      scxml.descriptor.status != ProcessStatus.Idle && !isDone
     }
+
+    override def isDone = scxml.descriptor.status == ProcessStatus.Halt
+
   }
 }

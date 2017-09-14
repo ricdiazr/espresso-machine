@@ -2,8 +2,9 @@ package org.o1.espresso.machine.scxml.document.parser
 
 import java.net.URL
 
-import org.o1.espresso.machine.scxml.document.{Final, SCXML, State}
+import org.o1.espresso.machine.scxml.document.{BindingType, Final, SCXML, State}
 import org.o1.espresso.machine.scxml.InvalidDocumentElementException
+
 import scala.xml.{Elem, Node, XML}
 
 /**
@@ -13,7 +14,12 @@ trait SCXMLDocument extends SCXML {
   val document:Elem
 
   override lazy val name:Option[String] = if ((document \@"name").isEmpty) None else Some((document \@"name"))
-  override def binding = if ((document \@"binding").isEmpty) super.binding else (document \@"binding")
+  override def binding = {
+    if ((document \@"binding").isEmpty) super.binding else (document \@"binding") match {
+      case "late" => BindingType.late
+      case _ => BindingType.early
+    }
+  }
   override def initial = if ((document \@"initial").isEmpty) super.initial else Some(document \@"initial")
   override def datamodel = DatamodelElement(document)
   override def script = {

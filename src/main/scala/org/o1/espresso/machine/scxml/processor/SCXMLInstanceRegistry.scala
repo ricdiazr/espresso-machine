@@ -5,8 +5,10 @@ import org.o1.logging.Logging
 
 trait SCXMLInstanceRegistry extends StateMachineProcessRegistry[SCXMLInstance] with Logging {
 
-  def get(instanceId:String): Option[SCXMLInstance] = {
+  def instance(instanceId:String): Option[SCXMLInstance] = {
     debug(s"getting SCXMLInstance(${instanceId})")
-    processes.filter(_.instanceId == instanceId).headOption
+    processes.find((t) => t._2.instanceId == instanceId) match {
+      case Some((t)) => Some(t._2)
+    }
   }
 }

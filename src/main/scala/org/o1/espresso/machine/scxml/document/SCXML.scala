@@ -9,7 +9,7 @@ trait SCXML extends DocumentElement {
   def localName: String = "scxml"
   lazy val name:Option[String] = None
   def version: String ="1.0"
-  def binding:String = "early"
+  def binding:BindingType.Value = BindingType.early
   def initial:Option[String] = None
   def datamodel: Datamodel
   def script: Option[Script]

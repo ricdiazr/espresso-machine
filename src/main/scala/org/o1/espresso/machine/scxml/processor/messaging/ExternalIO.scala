@@ -1,7 +1,8 @@
-package org.o1.espresso.machine.scxml.processor
+package org.o1.espresso.machine.scxml.processor.messaging
 
 import org.o1.espresso.machine.ProcessDescriptor
 import org.o1.espresso.machine.scxml.document.{Content, Param}
+import org.o1.espresso.machine.scxml.processor.SCXMLInstance
 
 /**
   * Created by ricardo on 12/20/16.

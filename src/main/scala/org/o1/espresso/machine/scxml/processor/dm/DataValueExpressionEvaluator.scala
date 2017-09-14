@@ -1,6 +1,7 @@
-package org.o1.espresso.machine.scxml.processor
+package org.o1.espresso.machine.scxml.processor.dm
 
 import org.o1.espresso.machine.scxml.document.{DataValueExpression, ExprStringValue, StringValue}
+import org.o1.espresso.machine.scxml.processor.NonConformantSCXMLException
 
 import scala.io.Source
 

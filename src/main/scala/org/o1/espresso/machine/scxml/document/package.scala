@@ -9,6 +9,9 @@ package object document {
   case class ExpressionValue(override val toString:String) extends ExprStringValue
   case class StringValue(override val toString:String) extends ExprStringValue
 
+  object BindingType extends Enumeration {
+    val early, late = Value
+  }
   object StateType extends Enumeration {
     val Initial, Parallel, Compound, Atomic = Value
   }

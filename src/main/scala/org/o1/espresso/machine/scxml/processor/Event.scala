@@ -2,7 +2,7 @@ package org.o1.espresso.machine.scxml.processor
 
 import java.util.EventObject
 
-import org.o1.espresso.machine.StateMachineProcess
+import org.o1.espresso.machine.{ProcessStatus,StateMachineProcess}
 import org.o1.espresso.machine.scxml.document.{Content, Param}
 
 /**
@@ -30,4 +30,14 @@ object ErrorEvent {
     new Event(src,
       descriptor = ErrorEventPrefix+error.toString,
       content = Some(new Content {val message = msg.getOrElse("")}))
+}
+
+object SignalEvent {
+  val SignalEventPrefix:String = "_system_signal."
+  object SpecialTarget extends Enumeration {
+    val _internal,_parent,_invoke = Value
+    override def toString:String = "#" + super.toString
+  }
+def apply(src:StateMachineProcess, status:ProcessStatus.Value) =
+  new Event(src,SignalEventPrefix+status.toString,Some(SpecialTarget._internal.toString))
 }

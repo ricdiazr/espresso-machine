@@ -21,11 +21,17 @@ class SCXMLDocumentParsing extends FunSuite with Matchers {
     assert(doc.states.exists(_.id.exists(_==id)))
   }
 
-  test("The actual state machine consists of its children" +
-  "datamodel=ecmascript") {
-    info(s"number of states: ${doc.states.size}")
+  test("The actual state machine consists of its children") {
+    info("<state> A compound or atomic state. Occurs zero or more times.")
+    assert(doc.states.size >= 0)
+    info("<datamodel datamodel=ecmascript>  Defines part or all of the data model. Occurs 0 or 1 times.")
     assert(doc.datamodel.modelType == "ecmascript")
-    info(s"number of states: ${doc.datamodel.toString}")
+    info("<final> A top-level final state in the state machine. Occurs zero or more times")
+    assert(doc.finals.size >= 0)
+    info("<script> Provides scripting capability occurs")
+    doc.script match {
+      case Some(x) => info("once")
+      case None  => info("once or none")}
   }
 
 }

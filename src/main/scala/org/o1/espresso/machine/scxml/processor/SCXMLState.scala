@@ -1,6 +1,7 @@
 package org.o1.espresso.machine.scxml.processor
 
 import org.o1.espresso.machine.StateMachineProcess
+import org.o1.espresso.machine.scxml.processor.dm.DataBinding
 
 import scala.collection.mutable
 
