@@ -55,10 +55,7 @@ protected object SCXMLMacroStep {
     val internalQueue: EventQueue = processor.eventQueue()
     val externalQueue: EventQueue = processor.eventQueue(true)
     val datamodel:SCXMLDatamodel[AnyRef] = processor.interpreter.datamodel(scxml.binding,scxml.datamodel)
-    override def isRunning = {
-      processor.debug(s"is ${scxml.instanceId} active?")
-      scxml.descriptor.status != ProcessStatus.Idle && !isDone
-    }
+    override def isRunning = scxml.descriptor.status != ProcessStatus.Idle && !isDone
 
     override def isDone = scxml.descriptor.status == ProcessStatus.Halt
 

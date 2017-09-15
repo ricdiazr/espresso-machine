@@ -6,9 +6,7 @@ import org.joda.time.Duration
   * Created by ricardo on 12/20/16.
   */
 trait StateMachineProcess {
-  val descriptor:ProcessDescriptor
-
-  def lastDescriptor: Option[ProcessDescriptor] = Some(descriptor)
+  def descriptor:ProcessDescriptor
 
   def duration :Long = new Duration(descriptor.start).getMillis
 

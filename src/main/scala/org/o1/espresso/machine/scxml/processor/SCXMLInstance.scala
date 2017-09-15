@@ -11,7 +11,7 @@ trait SCXMLInstance extends StateMachineProcess { this: SCXML =>
   lazy val instanceId:String = name.getOrElse("anon") + "." + descriptor.processId
   protected[this] val listeners = new mutable.MutableList[SCXMLEventListener]
   protected[this] val configuration = new mutable.MutableList[SCXMLState]
-  protected[this] val processStatusHistory = new mutable.MutableList[ProcessDescriptor]
+  protected[this] val processStatusHistory:mutable.ArrayBuffer[ProcessDescriptor]
 
   override protected[this] def signal(status:ProcessStatus.Value): StateMachineProcess = {
     if(status == descriptor.status)
@@ -28,14 +28,18 @@ trait SCXMLInstance extends StateMachineProcess { this: SCXML =>
   protected[processor] def activate(p:(SCXMLSession) => SCXMLProcessingStep): SCXMLProcessingStep = {
     if(descriptor.status != ProcessStatus.Idle)
       new IllegalStateException("state machine is already active")
+
     p(signal(ProcessStatus.Active).asInstanceOf[SCXMLSession])
   }
+
 }
 
 object SCXMLInstance {
   def apply(scxml: SCXML, processId:Long) = new SCXMLInstance
     with StateMachineProcess with SCXML {
-    override val descriptor = (processStatusHistory += ProcessDescriptor(processId,-1L,ProcessStatus.Idle)).last
+    override protected[this] val processStatusHistory:mutable.ArrayBuffer[ProcessDescriptor]
+    = mutable.ArrayBuffer[ProcessDescriptor](ProcessDescriptor(processId,-1L,ProcessStatus.Idle))
+    override def descriptor =processStatusHistory.last
 
     override def localName= scxml.localName
     override lazy val name = scxml.name

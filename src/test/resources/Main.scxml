@@ -5,6 +5,7 @@
        version="1.0"
        name="Main-no xi:include"
        initial="Main"
+       binding="late"
        datamodel="ecmascript">
     <state id="Main">
         <!-- its initial state is Test1 -->

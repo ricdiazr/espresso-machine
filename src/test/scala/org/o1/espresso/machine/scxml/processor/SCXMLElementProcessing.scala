@@ -10,12 +10,12 @@ import org.scalatest._
 
 class SCXMLElementProcessing extends FunSuite with Matchers {
   lazy val maindoc = SCXMLDocument(getClass.getResource("/Main.scxml").toString)
-  lazy val mainscxml:SCXMLInstance with SCXML= processor.process(maindoc)
   lazy val processor:SCXMLElementProcessor = new SCXMLElementProcessor  with SLF4JLogging {
     override val registry = new  SCXMLInstanceRegistry with SLF4JLogging
     override val interpreter: SCXMLElementInterpreter = new SCXMLElementInterpreter with SLF4JLogging with DataBinding
     override protected[processor] def eventQueue(isExternal: Boolean): EventQueue = FifoEventQueue()
   }
+  lazy val mainscxml:SCXMLInstance with SCXML= processor.process(maindoc)
 
   test("creates and registers a brand new SCXMLInstance for processing") {
 
@@ -29,7 +29,7 @@ class SCXMLElementProcessing extends FunSuite with Matchers {
 
   test("returned SCXMLInstance is an ACTIVE StateMachineProcess") {
     info(s"${mainscxml.name}.${mainscxml.instanceId} - status:${mainscxml.descriptor.status}")
-    assert(processor.registry.last match {
+    assert(processor.registry(mainscxml.instanceId) match {
       case Some(i) => i.descriptor.status == ProcessStatus.Active
       case _=>false
     })
