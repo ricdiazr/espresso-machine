@@ -7,12 +7,12 @@ trait SCXMLDatamodel[T] {
     val ct = "text/ecmascript"
   }
 
-  protected[this] val dataIndex:Map[String,T] = Map.empty
-  protected[this] def lateBinding = 0
+  protected lazy val datamodel:Map[String,T] = mapDatamodel
+  protected[this] def mapDatamodel:Map[String,T] = Map.empty
 
   def eval[V](expression:DataValueExpression, evaluator:(Map[String,T], String) => Option[V]): Option[V] =
     expression.value match {
-      case Some(x) => evaluator(dataIndex,x.toString)
+      case Some(x) => evaluator(datamodel,x.toString)
       case _ => None
     }
 
@@ -26,13 +26,15 @@ object SCXMLDatamodel {
   def apply[T](dm:Datamodel,b:(DatamodelData)=>T):SCXMLDatamodel[T] = apply(dm,b,Some(true))
   def apply[T](dm:Datamodel,b:(DatamodelData)=>T,lateFlag:Option[Boolean] = None):SCXMLDatamodel[T]
   = new SCXMLDatamodel[T] {
+    //Poor man lazyness
     var isLazy = lateFlag.getOrElse(false)
-    override val dataIndex:Map[String,T] = {
-      if(!isLazy) {
-        bnd(dm.datas("*").toList,b)
-      } else {
+    override def mapDatamodel:Map[String,T] = {
+      println(s"isLazy binding ${isLazy}")
+      if(isLazy) {
         isLazy = false
         Map.empty
+      } else {
+        bnd(dm.datas("*").toList,b)
       }}
   }
 

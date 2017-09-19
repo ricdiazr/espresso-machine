@@ -1,5 +1,6 @@
 package org.o1.espresso.machine.scxml.document.parser
 
+import org.o1.espresso.machine.scxml.InvalidDocumentElementException
 import org.o1.espresso.machine.scxml.document.{Executable, ExecutableOn}
 
 import scala.collection.mutable.ArrayBuffer
@@ -29,9 +30,14 @@ object ExecutableElement {
           case "send" => SendElement(node,bind)
           case "log" => LogElement(node,bind)
           case "if" => IfElement(node,bind)
+          case "onentry" => apply(node,ExecutableOn.Entry)
+          case "onexit" => apply(node,ExecutableOn.Exit)
+          case _=> throw InvalidDocumentElementException(
+            (node \@ "xmlns"), node.label, "unsupported scxml document")
         }
   def apply(nodeSeq:NodeSeq, bind:ExecutableOn.Value = ExecutableOn.Ordered): Seq[ExecutableElement] = new ExecutableElement {
-    val executableNode:Node = Null.asInstanceOf[Node]
-    override def localName: String = Null.asInstanceOf[String]
+    override val executableNode:Node = nodeSeq.asInstanceOf[Node]
+    override def localName: String = executableNode.label
+    println(s"building ${localName}")
   }.executableSequence(nodeSeq,bind)
 }

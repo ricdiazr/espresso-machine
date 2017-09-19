@@ -8,7 +8,7 @@ import org.o1.espresso.machine.scxml.{DocumentElement}
 trait State extends DocumentElement {
   def localName = "state"
   lazy val id:Option[String] = None
-  val stateType: StateType.Value
+  def stateType: StateType.Value
   def initial: Seq[String] = Nil
   def states: Seq[State] = Nil
   def executables(on:Option[ExecutableOn.Value]): Option[Seq[Executable]] = None

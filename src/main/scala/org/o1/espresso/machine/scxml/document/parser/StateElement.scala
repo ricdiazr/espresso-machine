@@ -10,7 +10,7 @@ import scala.xml.{Node}
 trait StateElement extends State {
   val state:Node
 
-  lazy val stateType = state.label match {
+  override def stateType = state.label match {
     case "initial" => StateType.Initial
     case "parallel" => StateType.Parallel
     case _ => if (state.count((n: Node) => (n.label == "state" || n.label == "initial" || n.label == "parallel")) > 0)
@@ -27,11 +27,11 @@ trait StateElement extends State {
       case ExecutableOn.Entry => Some(ExecutableElement(state \ "onentry",ExecutableOn.Entry))
 
       case ExecutableOn.Exit => Some(ExecutableElement(state \ "onexit", ExecutableOn.Exit))
-      case _ => Some(ExecutableElement(state))
+      case _ => None
     }
   }
   override def initial: Seq[String] = if ( (state \ "@initial").nonEmpty ) (state \@"initial").split(' ') else super.initial
-  override def  invokes: Seq[Invoke] = InvokeElement(state \ "invoke")
+  override def invokes: Seq[Invoke] = InvokeElement(state \ "invoke")
   override def transitions = TransitionElement(state \ "transition")
   override def history: Option[History] = if ( (state \ "history").nonEmpty ) Some(HistoryElement((state \ "history").head)) else None
   override def datamodel: Option[Datamodel] = if( (state \ "datamodel").nonEmpty ) Some(DatamodelElement(state \ "datamodel")) else None

@@ -1,7 +1,7 @@
 package org.o1.espresso.machine.scxml.processor
 
 import org.o1.espresso.machine.{ProcessDescriptor, ProcessStatus, StateMachineProcess}
-import org.o1.espresso.machine.scxml.document.{SCXML}
+import org.o1.espresso.machine.scxml.document.{Datamodel, SCXML}
 
 import scala.collection.mutable
 
@@ -40,15 +40,23 @@ object SCXMLInstance {
     override protected[this] val processStatusHistory:mutable.ArrayBuffer[ProcessDescriptor]
     = mutable.ArrayBuffer[ProcessDescriptor](ProcessDescriptor(processId,-1L,ProcessStatus.Idle))
     override def descriptor =processStatusHistory.last
-
-    override def localName= scxml.localName
     override lazy val name = scxml.name
-    override def version = scxml.version
-    override def binding = scxml.binding
-    override def datamodel = scxml.datamodel
-    override def script = scxml.script
-    override def states = scxml.states
-    override def finals = scxml.finals
+    lazy val ln= scxml.localName
+    lazy val ver = scxml.version
+    lazy val bind = scxml.binding
+    lazy val dm:Datamodel = scxml.datamodel
+    lazy val scpt = scxml.script
+    lazy val sS = scxml.states
+    lazy val fS = scxml.finals
+
+    override def localName= ln
+
+    override def version = ver
+    override def binding = bind
+    override def datamodel:Datamodel = dm
+    override def script = scpt
+    override def states = sS
+    override def finals = fS
 
   }
 }
