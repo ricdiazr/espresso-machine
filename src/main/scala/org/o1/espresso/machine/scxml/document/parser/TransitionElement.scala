@@ -21,7 +21,8 @@ trait TransitionElement extends Transition {
     case "internal" => TransitionType.Internal
     case _ => TransitionType.External
   }
-  override def target: Option[String] = if ( (transitionNode \ "@target").nonEmpty ) Some(transitionNode \@ "target") else None
+  override def target: Seq[String] = if ( (transitionNode \ "@target").nonEmpty )
+    (transitionNode \@ "target").split(" ").toSeq else Nil
   override def executables: Seq[Executable] = ExecutableElement(transitionNode \ "_")
 }
 object TransitionElement {

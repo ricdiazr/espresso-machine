@@ -1,7 +1,6 @@
 package org.o1.espresso.machine.scxml.document.parser
 
-import org.o1.espresso.machine.scxml.document.{Donedata, Final}
-import org.o1.espresso.machine.scxml.document.ExecutableOn
+import org.o1.espresso.machine.scxml.document.{Donedata, ExecutableOn, Final, StateType}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.xml.{Node, NodeSeq}
@@ -26,7 +25,10 @@ trait FinalElement extends Final {
   }
 }
 object FinalElement {
-  def apply(node:Node) = new FinalElement {override val finalNode: Node = node}
+  def apply(node:Node) = new FinalElement {
+    override val finalNode: Node = node
+    override def stateType = StateType.Atomic
+  }
   def apply(nodes:NodeSeq): Seq[FinalElement] = {
     val result = new ArrayBuffer[FinalElement]
     nodes foreach ((node:Node) => result += FinalElement(node))

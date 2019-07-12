@@ -1,14 +1,13 @@
-package org.o1.espresso.machine.scxml.processor.dm
+package org.o1.espresso.machine.scxml.processor
 
 import org.o1.espresso.machine.scxml.document.{DataValueExpression, ExprStringValue, StringValue}
-import org.o1.espresso.machine.scxml.processor.NonConformantSCXMLException
 
 import scala.io.Source
 
 /**
   * Created by ricardo on 3/11/17.
   */
-trait DataValueExpressionEvaluator {
+trait SCXMLDataValueExpressionEvaluator {
 
   def eval(context:Map[String,AnyVal], xpr:String): Either[String, Source]
 
